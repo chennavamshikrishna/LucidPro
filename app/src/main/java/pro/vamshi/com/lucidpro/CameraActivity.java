@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         pic=findViewById(R.id.pic);
+
         Button click=findViewById(R.id.click);
         click.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +77,9 @@ public class CameraActivity extends AppCompatActivity {
             // RESIZE BITMAP, see section below
             // Load the taken image into a preview
             pic.setImageBitmap(takenImage);
+            Intent i=new Intent(CameraActivity.this,OCRActivity.class);
+            i.putExtra("path",currentPhotoPath);
+            startActivity(i);
         } else { // ReString currentPhotoPath;
 
             Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();

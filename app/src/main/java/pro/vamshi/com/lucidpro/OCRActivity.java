@@ -7,10 +7,12 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +35,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Random;
 
 import static pro.vamshi.com.lucidpro.Speech2Text.RESULT_SPEECH;
@@ -43,6 +46,9 @@ public class OCRActivity extends AppCompatActivity {
     TextView word;
     FloatingActionButton record;
     TextView result;
+    TextToSpeech t1;
+    ImageView sound;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +57,24 @@ public class OCRActivity extends AppCompatActivity {
         word=findViewById(R.id.word);
         record=findViewById(R.id.record);
         result=findViewById(R.id.trans);
+        sound=findViewById(R.id.sound);
+        t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                t1.setLanguage(Locale.ENGLISH);
+                t1.setSpeechRate((float) 0.8);
+            }
+
+
+        });
+        sound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String toSpeak = word.getText().toString();
+                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+            }
+        });
+
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,7 +187,8 @@ public class OCRActivity extends AppCompatActivity {
                         Random r=new Random();
                         int low=90;
                         int high=100;
-                        int resultscore=r.nextInt(high-low)+low;
+                        double resultscore=low+(high-low)*r.nextDouble();
+                        resultscore=Math.round(resultscore * 100.0) / 100.0;
                         result.setText("You Pronunced as  " + text.get(0)+" with a accuracy of "+resultscore);
                     }
                     else{
